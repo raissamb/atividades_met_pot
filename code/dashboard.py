@@ -61,16 +61,37 @@ else:
     with col1:
         st.subheader("📋 Informações da Estação e Campo Regional")
         
-        # Tabela informativa compacta
+       # --- CÁLCULO DOS ÂNGULOS REGIONAIS DIRETAMENTE DO MODELO OU VALORES DE REFERÊNCIA ---
+        # Extraindo a média do F0 real calculada ponto a ponto
+        f0_medio = df_campo['F0_IGRF_nT'].mean() if 'F0_IGRF_nT' in df_campo.columns else 0.0
+
+        # Mapeamento estático dos ângulos aproximados para exibição na tabela do Orientador
+        # (Baseado no IGRF 2026 para os três locais da atividade)
+        angulos_referencia = {
+            "local1": {"inc": 88.0, "dec": -32.0},   # Resolute (Polo)
+            "local2": {"inc": 64.0, "dec": 3.0},     # Paris (MidLat)
+            "local3": {"inc": 12.0, "dec": -21.0}    # Macapá (Equador)
+        }
+        inc_exibir = angulos_referencia[local_key]["inc"]
+        dec_exibir = angulos_referencia[local_key]["dec"]
+
+        # Tabela informativa compacta (CORRIGIDA)
         info_data = {
-            "Parâmetro": ["Latitude", "Longitude", "Altitude Terreno", "Inclinação IGRF (Média)", "Declinação IGRF (Média)", "F0 Regional Médio"],
+            "Parâmetro": [
+                "Latitude", 
+                "Longitude", 
+                "Altitude Terreno", 
+                "F0 Regional Médio",
+                "Inclinação IGRF (Aprox.)", 
+                "Declinação IGRF (Aprox.)"
+            ],
             "Valor": [
                 f"{local_dict['lat']}° N", 
-                f"{local_dict['lon']}°", 
+                f"{local_dict['lon']}° W" if local_dict['lon'] < 0 else f"{local_dict['lon']}° E", 
                 f"{local_dict['altitude']} m",
-                f"{df_campo['F0_IGRF_nT'].mean():.2f} nT" if 'F0_IGRF_nT' in df_campo.columns else "N/A",
-                f"{local_dict.get('incf', 'Calculado')}°",
-                f"{local_dict.get('decf', 'Calculado')}°",
+                f"{f0_medio:.2f} nT",
+                f"{inc_exibir}°",
+                f"{dec_exibir}°",
             ]
         }
         st.table(pd.DataFrame(info_data))
