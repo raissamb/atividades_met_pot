@@ -1,0 +1,8 @@
+# Folders
+.venv/
+.spyproject
+
+# Files
+*.pyc
+*.png
+module_models.py
