@@ -147,7 +147,17 @@ def convert_meters_to_lat_lon(lat_origin: float,
 
 
 
-
+def get_rotated_coordinates(angle: float, 
+                            easting_local: np.ndarray, 
+                            northing_local: np.ndarray, 
+                            upward_local: np.ndarray):
+    """
+    Aplica a rotação de ângulo (em graus) nas coordenadas do sensor.
+    """
+    theta = np.radians(angle)
+    X_rot = easting_local * np.cos(theta) - northing_local * np.sin(theta)
+    Y_rot = easting_local * np.sin(theta) + northing_local * np.cos(theta)
+    return (X_rot, Y_rot, upward_local)
 
 
 def get_magnetization_vectors(props_list: list) -> np.ndarray:

@@ -1,8 +1,11 @@
 # Folders
 .venv/
 .spyproject
+atividade/
 
 # Files
 *.pyc
 *.png
 module_models.py
+atividade_dashboard.py
+atividade_mag_survey_creation.py
